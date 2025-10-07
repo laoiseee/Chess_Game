@@ -12,8 +12,8 @@ public class Board {
                 board[row][col] = '.';
             }
         }
-        char[] black = {'r', 'n', 'b', 'q', 'k', 'b', 'h', 'r'};
-        char[] white = {'R', 'N', 'B', 'Q', 'K', 'B', 'H', 'R'};
+        char[] black = {'r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'};
+        char[] white = {'R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R'};
 
         for (int i = 0; i<8; i++){
             board[0][i] = black[i];
@@ -169,9 +169,39 @@ public class Board {
         }
 
         if (valid){
+            char capturedPiece = board[r2][c2];
+            board[r2][c2] = piece;
+            board[r1][c1] =  '.';
+
+
+
+            CheckDetect check = new CheckDetect(this);
+            boolean isInCheck = check.detect(Character.isUpperCase(piece));
+
+            board[r1][c1] = piece;
+            board[r2][c2] = capturedPiece;
+
+            if(isInCheck){
+                System.out.println("This move will put you in check, try again.");
+                valid = false;
+            }
+
+
+        }
+
+        if(valid){
             board[r2][c2] = piece;
             board[r1][c1] =  '.';
             print();
+
+            CheckDetect check = new CheckDetect(this);
+            if(check.detect(true)){
+                System.out.println("White King is in Chcek!");
+            }
+            if(check.detect(false)){
+                System.out.println("Black King is in Chcek!");
+            }
+
         }
         return valid;
     }
