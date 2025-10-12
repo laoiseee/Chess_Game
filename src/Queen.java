@@ -14,7 +14,20 @@ public class Queen extends Piece {
         Rook rook = new Rook(isWhite);
         Bishop bishop = new Bishop(isWhite);
 
-        boolean valid = (rook.validMove(r1, r2, c1, c2, board) || bishop.validMove(r1, r2, c1, c2, board));
+        boolean valid = false;
+        try{
+            valid = rook.validMove(r1, r2, c1, c2, board);
+        } catch(IllegalArgumentException e){
+
+        }
+
+        if(!valid){
+            try{
+                valid = bishop.validMove(r1, r2, c1, c2, board);
+            } catch(IllegalArgumentException e){
+
+            }
+        }
 
         if(!valid){
             throw new IllegalArgumentException("Queen must move straight or diagonally.");

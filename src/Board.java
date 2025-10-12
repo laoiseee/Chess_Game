@@ -196,14 +196,29 @@ public class Board {
 
             CheckDetect check = new CheckDetect(this);
             if(check.detect(true)){
-                System.out.println("White King is in Chcek!");
+                System.out.println("White King is in Check!");
             }
             if(check.detect(false)){
-                System.out.println("Black King is in Chcek!");
+                System.out.println("Black King is in Check!");
             }
 
         }
         return valid;
+    }
+    //clear board for testing
+    public void clearBoard(){
+        for(int r = 0; r < 8; r++){
+            for(int c = 0; c < 8; c++){
+                board[r][c] = '.';
+            }
+        }
+
+    }
+
+    //add piece for testing
+    public void insertPiece(int r, int c, char piece){
+        board[r][c] = piece;
+
     }
 
     public char getPiece(int r1, int c1){

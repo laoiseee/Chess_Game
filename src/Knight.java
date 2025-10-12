@@ -12,7 +12,7 @@ public class Knight extends Piece {
         int rlen = Math.abs(r1 - r2);
         int clen = Math.abs(c1 - c2);
 
-        if(!(rlen ==1 && clen ==2)||!(rlen ==2 && clen ==1)){
+        if(!((rlen ==1 && clen ==2)||(rlen ==2 && clen ==1))){
             throw new IllegalArgumentException("Knight must move in an L shape.");
 
         }
