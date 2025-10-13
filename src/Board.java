@@ -37,10 +37,15 @@ public class Board {
             System.out.println();
         }
         System.out.println("   _ _ _ _ _ _ _ _ ");
-        System.out.print("   a b c d e f g h");
+        System.out.println("   a b c d e f g h");
     }
 
     public boolean move(int r1, int r2, int c1, int c2){
+        if(!inBounds(r1,c1)||!inBounds(r2, c2)){
+            System.out.println("Move out of Bounds");
+            return false;
+
+        }
         char piece = board[r1][c1];
         boolean valid = false;
         if(piece == '.'){
@@ -195,12 +200,18 @@ public class Board {
             print();
 
             CheckDetect check = new CheckDetect(this);
-            if(check.detect(true)){
-                System.out.println("White King is in Check!");
+            try {
+                if (check.detect(true)) {
+                    System.out.println("White King is in Check!");
+                }
+            }catch(IllegalArgumentException ignored){
+
             }
-            if(check.detect(false)){
-                System.out.println("Black King is in Check!");
-            }
+            try {
+                if (check.detect(false)) {
+                    System.out.println("Black King is in Check!");
+                }
+            } catch(IllegalArgumentException ignored){}
 
         }
         return valid;
@@ -212,6 +223,11 @@ public class Board {
                 board[r][c] = '.';
             }
         }
+
+    }
+
+    private boolean inBounds(int r, int c){
+        return r >= 0 && r < 8 && c >= 0 && c < 8;
 
     }
 

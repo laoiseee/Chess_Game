@@ -5,29 +5,45 @@ public class gameStart {
     public boolean gameEnd = false;
     public String name1;
     public String name2;
+    private Scanner scanIn;
 
-    public gameStart() {
-        Scanner scanIn = new Scanner(System.in);
+    public gameStart(){
+        this(new Scanner(System.in));
+
+    }
+
+    public gameStart(Scanner scanIn) {
+        this.scanIn = scanIn;
 
         System.out.println("\nWelcome");
         System.out.println("Please enter the name of player one (white): ");
         name1 = scanIn.nextLine();
         System.out.println("Please enter the name of player two (black): ");
         name2 = scanIn.nextLine();
-
+        System.out.println("Welcome "+name1+" and "+name2+".");
     }
 
     public void turn(Board board) {
-        Scanner scanIn = new Scanner(System.in);
+
         boolean valid;
 
         while(!gameEnd) {
-            while (whiteTurn == true) {
+            while (whiteTurn == true && !gameEnd) {
                 System.out.println(name1 + ", it's your turn");
                 System.out.println("Please enter a move: ");
 
                 String start = scanIn.next();
+                if(start.toLowerCase().equals("quit")){
+                    System.out.println("Game ended by "+name1);
+                    gameEnd = true;
+                    return;
+                }
                 String end = scanIn.next();
+                if(end.toLowerCase().equals("quit")){
+                    System.out.println("Game ended by "+name1);
+                    gameEnd = true;
+                    return;
+                }
 
                 int c1 = 0;
                 int c2 = 0;
@@ -122,13 +138,23 @@ public class gameStart {
 
             }
 
-            while (whiteTurn == false) {
+            while (whiteTurn == false && !gameEnd) {
 
                 System.out.println(name2 + ", it's your turn");
                 System.out.println("Please enter a move: ");
 
                 String start = scanIn.next();
+                if(start.toLowerCase().equals("quit")){
+                    System.out.println("Game ended by "+name2);
+                    gameEnd = true;
+                    return;
+                }
                 String end = scanIn.next();
+                if(end.toLowerCase().equals("quit")){
+                    System.out.println("Game ended by "+name2);
+                    gameEnd = true;
+                    return;
+                }
 
                 int c1 = 0;
                 int c2 = 0;
