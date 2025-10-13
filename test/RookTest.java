@@ -1,5 +1,4 @@
 import static org.junit.jupiter.api.Assertions.*;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -57,6 +56,5 @@ class RookTest {
         assertThrows(IllegalArgumentException.class,
                 () -> rook.validMove(4, 7, 4, 7, board));//taking own piece
     }
-
 
 }
