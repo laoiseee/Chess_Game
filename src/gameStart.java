@@ -1,4 +1,4 @@
-import java.util.Scanner;
+import java.util.*;
 
 public class gameStart {
     boolean whiteTurn = true;
@@ -23,12 +23,31 @@ public class gameStart {
         System.out.println("Welcome "+name1+" and "+name2+".");
     }
 
+    public void printHistory(Board board){
+        List<PastMove> history = board.getHistory();
+        if(history.isEmpty()||history == null){
+            System.out.println("No moves yet.");
+            return;
+        }
+        for (int i = 0; i<history.size(); i++){
+            PastMove move = history.get(i);
+            String player = Character.isUpperCase(move.piece)? "White":"Black";
+            System.out.println((i+1)+": "+player+": "+move);
+        }
+
+    }
+
     public void turn(Board board) {
 
         boolean valid;
 
         while(!gameEnd) {
             while (whiteTurn == true && !gameEnd) {
+                PastMove prevBlack = board.getLastBlackMove();
+                if (prevBlack != null) {
+                    System.out.println("Blacks Last Move: "+prevBlack);
+
+                }
                 System.out.println(name1 + ", it's your turn");
                 System.out.println("Please enter a move: ");
 
@@ -38,6 +57,12 @@ public class gameStart {
                     gameEnd = true;
                     return;
                 }
+
+                if(start.toLowerCase().equals("history")){
+                    printHistory(board);
+                    continue;
+                }
+
                 String end = scanIn.next();
                 if(end.toLowerCase().equals("quit")){
                     System.out.println("Game ended by "+name1);
@@ -139,6 +164,11 @@ public class gameStart {
             }
 
             while (whiteTurn == false && !gameEnd) {
+                PastMove prevWhite = board.getLastWhiteMove();
+                if (prevWhite != null) {
+                    System.out.println("Whites Last Move: "+prevWhite);
+
+                }
 
                 System.out.println(name2 + ", it's your turn");
                 System.out.println("Please enter a move: ");
@@ -149,12 +179,18 @@ public class gameStart {
                     gameEnd = true;
                     return;
                 }
+                if(start.toLowerCase().equals("history")){
+                    printHistory(board);
+                    continue;
+                }
                 String end = scanIn.next();
                 if(end.toLowerCase().equals("quit")){
                     System.out.println("Game ended by "+name2);
                     gameEnd = true;
                     return;
                 }
+
+
 
                 int c1 = 0;
                 int c2 = 0;

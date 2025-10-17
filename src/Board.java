@@ -1,5 +1,10 @@
+import java.util.*;
+
 public class Board {
     private char[][] board;
+    private PastMove lastWhiteMove = null;
+    private PastMove lastBlackMove = null;
+    private List<PastMove> history = new ArrayList<>();
 
     public Board(){
         board = new char[8][8];
@@ -11,6 +16,9 @@ public class Board {
             for (int col = 0; col < 8; col++){
                 board[row][col] = '.';
             }
+            history.clear();
+            lastWhiteMove = null;
+            lastBlackMove = null;
         }
         char[] black = {'r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'};
         char[] white = {'R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R'};
@@ -195,8 +203,10 @@ public class Board {
         }
 
         if(valid){
+            char capturedPiece = board[r2][c2];
             board[r2][c2] = piece;
             board[r1][c1] =  '.';
+            recordMove(new PastMove(r1, r2, c1, c2, piece, capturedPiece));
             print();
 
             CheckDetect check = new CheckDetect(this);
@@ -239,5 +249,27 @@ public class Board {
 
     public char getPiece(int r1, int c1){
         return board[r1][c1];
+    }
+
+    public PastMove getLastWhiteMove(){
+        return lastWhiteMove;
+    }
+
+    public PastMove getLastBlackMove(){
+        return lastBlackMove;
+    }
+
+    public void recordMove(PastMove past){
+        boolean moveWasWhite = Character.isUpperCase(past.piece);
+        if(moveWasWhite){
+            lastWhiteMove = past;
+        } else{
+            lastBlackMove = past;
+        }
+        history.add(past);
+    }
+
+    public List<PastMove> getHistory(){
+        return history;
     }
 }
