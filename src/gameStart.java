@@ -71,6 +71,16 @@ public class gameStart {
 
         while(!gameEnd) {
             while (whiteTurn == true && !gameEnd) {
+                if (!board.hasLegalMoves(true)) {
+                    if(board.inCheck(true)){
+                        System.out.println("Checkmate. Black wins!");
+                    } else{
+                        System.out.println("Stalemate. Game Over!");
+                    }
+                    gameEnd = true;
+                    return;
+
+                }
                 PastMove prevBlack = board.getLastBlackMove();
                 if (prevBlack != null) {
                     System.out.println("Blacks Last Move: "+prevBlack);
@@ -89,6 +99,20 @@ public class gameStart {
                 if(start.toLowerCase().equals("history")){
                     printHistory(board);
                     continue;
+                }
+
+                if(start.toLowerCase().equals("moves")){
+                    List<PastMove> moves = board.getLegalMoves(true);
+                    if(moves==null||moves.isEmpty()){
+                        System.out.println("No legal moves found.");
+                    } else{
+                        System.out.println("Legal Moves: ("+moves.size()+")");
+                        for(int i = 0; i < moves.size(); i++){
+                            System.out.println(i+1+": "+moves.get(i));
+                        }
+                    }
+                    continue;
+
                 }
                 int[] startSpot;
                 try{
@@ -140,6 +164,16 @@ public class gameStart {
             }
 
             while (whiteTurn == false && !gameEnd) {
+                if (!board.hasLegalMoves(false)) {
+                    if (board.inCheck(false)) {
+                        System.out.println("Checkmate. White wins!");
+                    } else{
+                        System.out.println("Stalemate. Game Over!");
+                    }
+                    gameEnd = true;
+                    return;
+
+                    }
                 PastMove prevWhite = board.getLastWhiteMove();
                 if (prevWhite != null) {
                     System.out.println("Whites Last Move: "+prevWhite);
@@ -159,6 +193,21 @@ public class gameStart {
                     printHistory(board);
                     continue;
                 }
+
+                if(start.toLowerCase().equals("moves")){
+                    List<PastMove> moves = board.getLegalMoves(false);
+                    if(moves==null||moves.isEmpty()){
+                        System.out.println("No legal moves found.");
+                    } else{
+                        System.out.println("Legal Moves: ("+moves.size()+")");
+                        for(int i = 0; i < moves.size(); i++){
+                            System.out.println(i+1+": "+moves.get(i));
+                        }
+                    }
+                    continue;
+
+                }
+
                 int[] startSpot;
                 try{
                     startSpot = newSquare(start);
@@ -166,6 +215,7 @@ public class gameStart {
                     System.out.println("Input error: "+e.getMessage());
                     continue;
                 }
+
 
                 String end = scanIn.next();
                 if(end.toLowerCase().equals("quit")){

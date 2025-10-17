@@ -131,6 +131,11 @@ public class Board {
 
     }
 
+    public boolean hasLegalMoves(boolean white){
+        return !getLegalMoves(white).isEmpty();
+
+    }
+
     public boolean move(int r1, int r2, int c1, int c2){
         if(!inBounds(r1,c1)||!inBounds(r2, c2)){
             System.out.println("Move out of Bounds");
