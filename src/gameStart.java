@@ -25,7 +25,7 @@ public class gameStart {
 
     public void printHistory(Board board){
         List<PastMove> history = board.getHistory();
-        if(history.isEmpty()||history == null){
+        if(history == null||history.isEmpty()){
             System.out.println("No moves yet.");
             return;
         }
@@ -35,6 +35,34 @@ public class gameStart {
             System.out.println((i+1)+": "+player+": "+move);
         }
 
+    }
+    private int filetoColumn(char file){
+        return file - 'a';
+
+    }
+
+    private int rowChange(char row){
+        return row - '1';
+    }
+
+    private int[] newSquare(String spot){
+        if(spot == null){
+            throw new IllegalArgumentException("No square entered");
+        }
+        spot = spot.trim().toLowerCase();
+        if(spot.length() !=2) {
+            throw new IllegalArgumentException("Invalid square entered. Please enter move in the format use a1...h8 \n(e.g) 'a7 a5'");
+        }
+            char col = spot.charAt(0);
+            char row = spot.charAt(1);
+
+            if(col < 'a' || col > 'h'||row <  '1' || row > '8'){
+                throw new IllegalArgumentException("Square out of range");
+            }
+            int c = filetoColumn(col);
+            int r = rowChange(row);
+
+            return new int[]{r,c};
     }
 
     public void turn(Board board) {
@@ -62,6 +90,13 @@ public class gameStart {
                     printHistory(board);
                     continue;
                 }
+                int[] startSpot;
+                try{
+                    startSpot = newSquare(start);
+                } catch(IllegalArgumentException e){
+                    System.out.println("Input error: "+e.getMessage());
+                    continue;
+                }
 
                 String end = scanIn.next();
                 if(end.toLowerCase().equals("quit")){
@@ -70,79 +105,20 @@ public class gameStart {
                     return;
                 }
 
-                int c1 = 0;
-                int c2 = 0;
 
-                if (start.startsWith("b")) {
-                    c1 = 1;
-                } else if (start.startsWith("c")) {
-                    c1 = 2;
-                } else if (start.startsWith("d")) {
-                    c1 = 3;
-                } else if (start.startsWith("e")) {
-                    c1 = 4;
-                } else if (start.startsWith("f")) {
-                    c1 = 5;
-                } else if (start.startsWith("g")) {
-                    c1 = 6;
-                } else if (start.startsWith("h")) {
-                    c1 = 7;
+
+                int[] endSpot;
+                try{
+                    endSpot = newSquare(end);
+                }catch(IllegalArgumentException e){
+                    System.out.println("Input error: "+e.getMessage());
+                    continue;
                 }
+                int r1 = startSpot[0];
+                int r2 = endSpot[0];
+                int c1 = startSpot[1];
+                int c2 = endSpot[1];
 
-                if (end.startsWith("b")) {
-                    c2 = 1;
-                } else if (end.startsWith("c")) {
-                    c2 = 2;
-                } else if (end.startsWith("d")) {
-                    c2 = 3;
-                } else if (end.startsWith("e")) {
-                    c2 = 4;
-                } else if (end.startsWith("f")) {
-                    c2 = 5;
-                } else if (end.startsWith("g")) {
-                    c2 = 6;
-                } else if (end.startsWith("h")) {
-                    c2 = 7;
-                }
-
-                int r1 = 0;
-                int r2 = 0;
-
-                if (start.endsWith("1")) {
-                    r1 = 0;
-                } else if (start.endsWith("2")) {
-                    r1 = 1;
-                } else if (start.endsWith("3")) {
-                    r1 = 2;
-                } else if (start.endsWith("4")) {
-                    r1 = 3;
-                } else if (start.endsWith("5")) {
-                    r1 = 4;
-                } else if (start.endsWith("6")) {
-                    r1 = 5;
-                } else if (start.endsWith("7")) {
-                    r1 = 6;
-                } else if (start.endsWith("8")) {
-                    r1 = 7;
-                }
-
-                if (end.endsWith("1")) {
-                    r2 = 0;
-                } else if (end.endsWith("2")) {
-                    r2 = 1;
-                } else if (end.endsWith("3")) {
-                    r2 = 2;
-                } else if (end.endsWith("4")) {
-                    r2 = 3;
-                } else if (end.endsWith("5")) {
-                    r2 = 4;
-                } else if (end.endsWith("6")) {
-                    r2 = 5;
-                } else if (end.endsWith("7")) {
-                    r2 = 6;
-                } else if (end.endsWith("8")) {
-                    r2 = 7;
-                }
 
                 char current = board.getPiece(r1, c1);
 
@@ -183,6 +159,14 @@ public class gameStart {
                     printHistory(board);
                     continue;
                 }
+                int[] startSpot;
+                try{
+                    startSpot = newSquare(start);
+                } catch(IllegalArgumentException e){
+                    System.out.println("Input error: "+e.getMessage());
+                    continue;
+                }
+
                 String end = scanIn.next();
                 if(end.toLowerCase().equals("quit")){
                     System.out.println("Game ended by "+name2);
@@ -190,81 +174,17 @@ public class gameStart {
                     return;
                 }
 
-
-
-                int c1 = 0;
-                int c2 = 0;
-
-                if (start.startsWith("b")) {
-                    c1 = 1;
-                } else if (start.startsWith("c")) {
-                    c1 = 2;
-                } else if (start.startsWith("d")) {
-                    c1 = 3;
-                } else if (start.startsWith("e")) {
-                    c1 = 4;
-                } else if (start.startsWith("f")) {
-                    c1 = 5;
-                } else if (start.startsWith("g")) {
-                    c1 = 6;
-                } else if (start.startsWith("h")) {
-                    c1 = 7;
+                int[] endSpot;
+                try{
+                    endSpot = newSquare(end);
+                }catch(IllegalArgumentException e){
+                    System.out.println("Input error: "+e.getMessage());
+                    continue;
                 }
-
-                if (end.startsWith("b")) {
-                    c2 = 1;
-                } else if (end.startsWith("c")) {
-                    c2 = 2;
-                } else if (end.startsWith("d")) {
-                    c2 = 3;
-                } else if (end.startsWith("e")) {
-                    c2 = 4;
-                } else if (end.startsWith("f")) {
-                    c2 = 5;
-                } else if (end.startsWith("g")) {
-                    c2 = 6;
-                } else if (end.startsWith("h")) {
-                    c2 = 7;
-                }
-
-                int r1 = 0;
-                int r2 = 0;
-
-                if (start.endsWith("1")) {
-                    r1 = 0;
-                } else if (start.endsWith("2")) {
-                    r1 = 1;
-                } else if (start.endsWith("3")) {
-                    r1 = 2;
-                } else if (start.endsWith("4")) {
-                    r1 = 3;
-                } else if (start.endsWith("5")) {
-                    r1 = 4;
-                } else if (start.endsWith("6")) {
-                    r1 = 5;
-                } else if (start.endsWith("7")) {
-                    r1 = 6;
-                } else if (start.endsWith("8")) {
-                    r1 = 7;
-                }
-
-                if (end.endsWith("1")) {
-                    r2 = 0;
-                } else if (end.endsWith("2")) {
-                    r2 = 1;
-                } else if (end.endsWith("3")) {
-                    r2 = 2;
-                } else if (end.endsWith("4")) {
-                    r2 = 3;
-                } else if (end.endsWith("5")) {
-                    r2 = 4;
-                } else if (end.endsWith("6")) {
-                    r2 = 5;
-                } else if (end.endsWith("7")) {
-                    r2 = 6;
-                } else if (end.endsWith("8")) {
-                    r2 = 7;
-                }
+                int r1 = startSpot[0];
+                int r2 = endSpot[0];
+                int c1 = startSpot[1];
+                int c2 = endSpot[1];
 
 
                 char current = board.getPiece(r1, c1);
