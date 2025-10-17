@@ -12,13 +12,14 @@ public class Board {
     }
 
     private void setup(){
+        history.clear();
+        lastWhiteMove = null;
+        lastBlackMove = null;
         for (int row = 0; row < 8; row++){
             for (int col = 0; col < 8; col++){
                 board[row][col] = '.';
             }
-            history.clear();
-            lastWhiteMove = null;
-            lastBlackMove = null;
+
         }
         char[] black = {'r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'};
         char[] white = {'R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R'};
@@ -46,6 +47,88 @@ public class Board {
         }
         System.out.println("   _ _ _ _ _ _ _ _ ");
         System.out.println("   a b c d e f g h");
+    }
+
+    public boolean inCheck(boolean white){
+        try{
+            return new CheckDetect(this).detect(white);
+    }catch (IllegalArgumentException e){
+            return false;
+        }
+
+    }
+
+    public List<PastMove> getLegalMoves(boolean white){
+        List <PastMove> legal = new ArrayList<>();
+
+        for(int r1 = 0; r1 < 8; r1++){
+            for(int c1 = 0; c1 < 8; c1++){
+                char piece = board[r1][c1];
+                if(piece == '.'){
+                    continue;
+                }
+                if(Character.isUpperCase(piece)!= white){
+                    continue;
+                }
+
+                for(int r2 = 0; r2 < 8; r2++){
+                    for(int c2 = 0; c2 < 8; c2++){
+                        if(r1 == r2 && c1 == c2){
+                            continue;
+                        }
+                        boolean moveIsValid;
+                        char pieceType = Character.toLowerCase(piece);
+
+                        try{
+                            if(pieceType == 'p'){
+                                moveIsValid = new Pawn(white).validMove(r1, r2, c1, c2, this);
+                            } else if(pieceType == 'r'){
+                                moveIsValid = new Rook(white).validMove(r1, r2, c1, c2, this);
+                            } else if(pieceType == 'n'){
+                                moveIsValid = new Knight(white).validMove(r1, r2, c1, c2, this);
+                            } else if(pieceType == 'b'){
+                                moveIsValid = new Bishop(white).validMove(r1, r2, c1, c2, this);
+                            } else if(pieceType == 'q'){
+                                moveIsValid = new Queen(white).validMove(r1, r2, c1, c2, this);
+                            } else  if(pieceType == 'k'){
+                                moveIsValid = new King(white).validMove(r1, r2, c1, c2, this);
+                            } else{
+                                moveIsValid = false;
+                            }
+                        }  catch(IllegalArgumentException e){
+                            moveIsValid = false;
+                        }
+                        if(!moveIsValid){
+                            continue;
+                        }
+
+                        char dest = board[r2][c2];
+                        board[r2][c2] = piece;
+                        board[r1][c1] = '.';
+
+                        boolean LeavesinCheck;
+
+                        try{
+                            LeavesinCheck = new CheckDetect(this).detect(white);
+                        } catch (IllegalArgumentException e){
+                            LeavesinCheck = true;
+                        }
+
+                        board[r1][c1] = piece;
+                        board[r2][c2] = dest;
+
+                        if(!LeavesinCheck){
+                            legal.add(new PastMove(r1, r2, c1, c2, piece, dest));
+                        }
+
+
+                    }
+                }
+
+            }
+        }
+        return legal;
+
     }
 
     public boolean move(int r1, int r2, int c1, int c2){
