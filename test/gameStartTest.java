@@ -58,4 +58,37 @@ class gameStartTest {
 
     }
 
+    @Test
+    void whiteMoveBlackQuit(){
+        Scanner input = new Scanner("Laoise\nTara\na7 a5\nquit");
+        gameStart game = new gameStart(input);
+        Board board = new Board();
+        game.turn(board);
+        assertTrue(game.gameEnd);
+        assertFalse(game.whiteTurn);
+
+    }
+
+    @Test
+    void invalidSquareQuit(){
+        Scanner input = new Scanner("Laoise\nTara\na75\nquit");
+        gameStart game = new gameStart(input);
+        Board board = new Board();
+        game.turn(board);
+        assertTrue(game.gameEnd);
+        assertTrue(game.whiteTurn);
+
+    }
+
+    @Test
+    void printHistory(){
+        Scanner input = new Scanner("Laoise\nTara\na7 a5\nhistory\nquit");
+        gameStart game = new gameStart(input);
+        Board board = new Board();
+        game.turn(board);
+        assertTrue(game.gameEnd);
+        assertFalse(game.whiteTurn);
+
+    }
+
 }

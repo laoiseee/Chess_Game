@@ -88,4 +88,54 @@ class BoardTest {
         assertFalse(board.move(3, 3, 3, 4));
     }
 
+    @Test
+    void legalMovesAtStart(){
+        assertFalse(board.getLegalMoves(true).isEmpty());
+        assertFalse(board.getLegalMoves(false).isEmpty());
+
+    }
+
+    @Test
+    void recordMove(){
+        board.clearBoard();
+        board.insertPiece(0, 4, 'k');
+        board.insertPiece(7, 4, 'K');
+        board.insertPiece(4, 4, 'q');
+
+        assertTrue(board.move(4, 4, 4, 7));
+        assertEquals(board.getHistory().size(), 1);
+        assertEquals(board.getLastWhiteMove(), null);
+        assertFalse(board.getLastBlackMove() == null);
+
+    }
+
+    @Test
+    void noOwnMove(){
+        board.clearBoard();
+        board.insertPiece(0, 0, 'K');
+        board.insertPiece(4, 4, 'Q');
+        assertFalse(board.move(4, 4, 4, 4));
+    }
+
+    @Test
+    void blackInCheckMate(){
+        board.clearBoard();
+        board.insertPiece(7, 0, 'k');
+        board.insertPiece(6, 1, 'Q');
+        board.insertPiece(5, 2, 'K');
+        assertTrue(board.inCheck(false));
+        assertFalse(board.hasLegalMoves(false));
+    }
+
+    @Test
+    void stalemate(){
+        board.clearBoard();
+        board.insertPiece(7, 0, 'k');
+        board.insertPiece(6, 2, 'Q');
+        board.insertPiece(5, 1, 'K');
+        assertFalse(board.inCheck(false));
+        assertFalse(board.hasLegalMoves(false));
+
+    }
+
 }

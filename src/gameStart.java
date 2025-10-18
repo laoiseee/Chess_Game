@@ -51,7 +51,7 @@ public class gameStart {
         }
         spot = spot.trim().toLowerCase();
         if(spot.length() !=2) {
-            throw new IllegalArgumentException("Invalid square entered. Please enter move in the format use a1...h8 \n(e.g) 'a7 a5'");
+            throw new IllegalArgumentException("Invalid square entered. Please enter move in the format use a1...h8 8(e.g) 'a7 a5'");
         }
             char col = spot.charAt(0);
             char row = spot.charAt(1);

@@ -58,5 +58,7 @@ class BishopTest {
         assertTrue(bishop.validMove(4, 7, 4, 7, board));
 
     }
+    
+
 
 }
