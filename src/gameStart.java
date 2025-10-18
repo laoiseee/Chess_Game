@@ -66,6 +66,10 @@ public class gameStart {
     }
 
     public void turn(Board board) {
+        if(!board.getHistory().isEmpty()){
+            PastMove lastMove = board.getHistory().getLast();
+            whiteTurn =  Character.isLowerCase(lastMove.piece);
+        }
 
         boolean valid;
 
@@ -87,9 +91,20 @@ public class gameStart {
 
                 }
                 System.out.println(name1 + ", it's your turn");
+                System.out.println("Type 'save' to save the game, 'load' to reload a game, 'history' to view move history, or 'quit' to quit the game");
                 System.out.println("Please enter a move: ");
 
                 String start = scanIn.next();
+                if (start.toLowerCase().equals("save")) {
+                    GameSaveandLoad.save(board, "saved_game.txt");
+                    continue;
+                }
+
+                if(start.toLowerCase().equals("load")) {
+                    GameSaveandLoad.load(board, "saved_game.txt");
+                    continue;
+                }
+
                 if(start.toLowerCase().equals("quit")){
                     System.out.println("Game ended by "+name1);
                     gameEnd = true;
@@ -181,9 +196,19 @@ public class gameStart {
                 }
 
                 System.out.println(name2 + ", it's your turn");
+                System.out.print("Type 'save' to save the game, 'load' to reload a game, 'history' to view move history, or 'quit' to quit the game");
                 System.out.println("Please enter a move: ");
 
                 String start = scanIn.next();
+                if (start.toLowerCase().equals("save")) {
+                    GameSaveandLoad.save(board, "saved_game.txt");
+                    continue;
+                }
+
+                if(start.toLowerCase().equals("load")) {
+                    GameSaveandLoad.load(board, "saved_game.txt");
+                    continue;
+                }
                 if(start.toLowerCase().equals("quit")){
                     System.out.println("Game ended by "+name2);
                     gameEnd = true;

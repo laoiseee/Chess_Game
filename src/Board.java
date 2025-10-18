@@ -360,4 +360,8 @@ public class Board {
     public List<PastMove> getHistory(){
         return history;
     }
+
+    public void gameReset(){
+        setup();
+    }
 }
