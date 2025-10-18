@@ -91,7 +91,7 @@ public class gameStart {
 
                 }
                 System.out.println(name1 + ", it's your turn");
-                System.out.println("Type 'save' to save the game, 'load' to reload a game, 'history' to view move history, or 'quit' to quit the game");
+                System.out.println("Type 'save' to save the game, 'load' to reload a game, 'history' to view move history, 'moves' to see all available moves or 'quit' to quit the game");
                 System.out.println("Please enter a move: ");
 
                 String start = scanIn.next();
@@ -196,7 +196,7 @@ public class gameStart {
                 }
 
                 System.out.println(name2 + ", it's your turn");
-                System.out.print("Type 'save' to save the game, 'load' to reload a game, 'history' to view move history, or 'quit' to quit the game");
+                System.out.print("Type 'save' to save the game, 'load' to reload a game, 'history' to view move history, 'moves' to see all available moves or 'quit' to quit the game");
                 System.out.println("Please enter a move: ");
 
                 String start = scanIn.next();
