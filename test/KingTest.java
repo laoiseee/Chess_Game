@@ -76,4 +76,39 @@ class KingTest {
         assertThrows(IllegalArgumentException.class,
         ()-> king.validMove(4, 3, 5, 3, board));
     }
+
+    @Test
+    void castleALlowedWhenLegal(){
+        board.clearBoard();
+        board.insertPiece(7, 4, 'K');
+        board.insertPiece(0, 4, 'k');
+        board.insertPiece(7, 7, 'R');
+
+        assertTrue(king.validMove(7, 7, 4, 6, board));
+
+    }
+
+    @Test
+    void rejectCastleIfNotOnStartSquare(){
+        board.clearBoard();
+        board.insertPiece(7, 3, 'K');
+        board.insertPiece(0, 4, 'k');
+
+        assertThrows(IllegalArgumentException.class,
+                ()-> king.validMove(7, 7, 3, 5, board));
+    }
+
+    @Test
+    void rejectCastleIfNoRookPresent(){
+        board.clearBoard();
+        board.insertPiece(7, 4, 'K');
+        board.insertPiece(0, 4, 'k');
+
+
+        assertThrows(IllegalArgumentException.class,
+                ()-> king.validMove(7, 7, 4, 6, board));
+
+    }
+
+
 }

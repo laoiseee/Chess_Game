@@ -136,6 +136,7 @@ public class Board {
 
     }
 
+    //moving piece logic
     public boolean move(int r1, int r2, int c1, int c2){
         if(!inBounds(r1,c1)||!inBounds(r2, c2)){
             System.out.println("Move out of Bounds");
@@ -269,11 +270,13 @@ public class Board {
             }
         }
 
+        //check validity of moves and move piece
         if (valid){
             char capturedPiece = board[r2][c2];
             board[r2][c2] = piece;
             board[r1][c1] =  '.';
 
+            //castling move
             if((piece == 'k'||piece == 'K') && r1 ==r2 && Math.abs(c1-c2) == 2){
                 int back = r1;
                 if(c2>c1){
@@ -286,7 +289,7 @@ public class Board {
             }
 
 
-
+            //check detection
             CheckDetect check = new CheckDetect(this);
             boolean isInCheck = check.detect(Character.isUpperCase(piece));
 
@@ -335,6 +338,7 @@ public class Board {
 
     }
 
+//check if move is in bounds
     private boolean inBounds(int r, int c){
         return r >= 0 && r < 8 && c >= 0 && c < 8;
 
@@ -358,6 +362,7 @@ public class Board {
         return lastBlackMove;
     }
 
+    //record past moves
     public void recordMove(PastMove past){
         boolean moveWasWhite = Character.isUpperCase(past.piece);
         if(moveWasWhite){
@@ -377,6 +382,7 @@ public class Board {
     }
 
     //castling
+    //check if piece has moved from original point
     public boolean hasMoved(int r, int c){
         List<PastMove> history = getHistory();
         if(history == null){
@@ -390,6 +396,7 @@ public class Board {
         return false;
     }
 
+    //check if squarre is under attack
     public boolean isSquareAttacked(int targetRow, int targetCol, boolean attackerIsWhite){
         for(int r = 0; r < 8; r++){
             for(int c = 0; c < 8; c++){
@@ -447,6 +454,7 @@ public class Board {
         return false;
     }
 
+    //check if castling is valid
     public boolean canCastle(boolean isWhite, boolean kingSide){
         int backRow;
 
@@ -542,5 +550,7 @@ public class Board {
 
 
     }
+
+
 
 }

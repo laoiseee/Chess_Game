@@ -138,4 +138,97 @@ class BoardTest {
 
     }
 
+    @Test
+    void castleWhiteKingSideMovesKingandRook(){
+        board.clearBoard();
+        board.insertPiece(7, 4, 'K');
+        board.insertPiece(0, 4, 'k');
+        board.insertPiece(7, 7, 'R');
+
+        assertTrue(board.move(7,7,4, 6));
+
+        assertEquals(board.getPiece(7, 6),'K' );
+        assertEquals(board.getPiece(7, 5),'R' );
+        assertEquals(board.getPiece(7, 7),'.' );
+
+    }
+
+    @Test
+    void castleWhiteQueenSideMovesKingandRook(){
+        board.clearBoard();
+        board.clearBoard();
+        board.insertPiece(7, 4, 'K');
+        board.insertPiece(0, 4, 'k');
+        board.insertPiece(7, 0, 'R');
+
+        assertTrue(board.move(7,7,4, 2));
+
+        assertEquals(board.getPiece(7, 2),'K' );
+        assertEquals(board.getPiece(7, 3),'R' );
+        assertEquals(board.getPiece(7, 0),'.' );
+    }
+
+    @Test
+    void castleFailsPathBlocked(){
+        board.clearBoard();
+        board.insertPiece(7, 4, 'K');
+        board.insertPiece(0, 4, 'k');
+        board.insertPiece(7, 7, 'R');
+        board.insertPiece(7, 5, 'N');
+
+        assertFalse(board.move(7,7,4, 6));
+
+    }
+
+    @Test
+    void castleFailsThroughSquareUnderAttack(){
+        board.clearBoard();
+        board.insertPiece(7, 4, 'K');
+        board.insertPiece(0, 4, 'k');
+        board.insertPiece(7, 7, 'R');
+        board.insertPiece(0, 5, 'r');
+
+        assertFalse(board.move(7,7,4, 6));
+
+    }
+
+    @Test
+    void failsDestinationSquareUnderAttack(){
+        board.clearBoard();
+        board.insertPiece(7, 4, 'K');
+        board.insertPiece(0, 4, 'k');
+        board.insertPiece(7, 7, 'R');
+        board.insertPiece(5, 4, 'b');
+
+        assertFalse(board.move(7,7,4, 6));
+
+
+    }
+
+    @Test
+    void castleFailsRookMovedEarlier(){
+        board.clearBoard();
+        board.insertPiece(7, 4, 'K');
+        board.insertPiece(0, 4, 'k');
+        board.insertPiece(7, 7, 'R');
+
+        assertTrue(board.move(7,7, 7, 6));
+        assertTrue(board.move(7,7, 6, 7));
+        assertFalse(board.move(7,7,4, 6));
+
+    }
+
+    @Test
+    void castleFailedKingMovedEarlier(){
+        board.clearBoard();
+        board.insertPiece(7, 4, 'K');
+        board.insertPiece(0, 4, 'k');
+        board.insertPiece(7, 7, 'R');
+
+        assertTrue(board.move(7,7, 4, 5));
+        assertTrue(board.move(7,7, 5, 4));
+        assertFalse(board.move(7,7,4, 6));
+
+    }
+
 }
