@@ -231,4 +231,23 @@ class BoardTest {
 
     }
 
+    @Test
+    void enPassantRemovesCorrectPawn(){
+        board.clearBoard();
+        board.insertPiece(7, 4, 'K');
+        board.insertPiece(0, 4, 'k');
+
+        board.insertPiece(3, 4, 'P');
+        board.insertPiece(1, 5, 'p');
+
+        board.move(1, 3, 5, 5);
+        assertEquals(2, board.getEnPassantTargetRow());
+        assertEquals(5, board.getEnPassantTargetCol());
+
+        assertTrue(board.move(3, 2, 4, 5));
+
+        assertEquals(board.getPiece(3, 5), '.');
+        assertEquals(board.getPiece(2, 5), 'P');
+    }
+
 }

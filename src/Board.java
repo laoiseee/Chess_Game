@@ -106,12 +106,56 @@ public class Board {
                         board[r2][c2] = piece;
                         board[r1][c1] = '.';
 
+
+                        //castling
+                        int castleRookFromCol = -1;
+                        int castleRookToCol = -1;
+                        if((Character.toLowerCase(piece)=='k')&&r1 == r2 &&Math.abs(c1-c2)==2) {
+                            int back = r1;
+                            if (c2 > c1) {
+                                board[back][5] = board[back][7];
+                                board[back][7] = '.';
+                                castleRookFromCol = 7;
+                                castleRookToCol = 5;
+                            } else {
+                                board[back][3] = board[back][0];
+                                board[back][0] = '.';
+                                castleRookFromCol = 0;
+                                castleRookToCol = 3;
+                            }
+                        }
+                        //en passant
+                        int epTempRow = -1;
+                        char epTempPiece = '.';
+                        if((piece=='p'||piece=='P') && Math.abs(c1-c2) == 1 && dest == '.'&&r2 == getEnPassantTargetRow() && c2 == getEnPassantTargetCol()&&((Character.isUpperCase(piece)&&(r2 - r1)==-1)||(Character.isLowerCase(piece)&&(r2-r1)==1))){
+                            if(Character.isUpperCase(piece)){
+                                epTempRow = r2 +1;
+                            }else{
+                                epTempRow = r2 -1;
+                            }
+                            epTempPiece = board[epTempRow][c2];
+                            board[epTempRow][c2] = '.';
+
+
+                        }
+
                         boolean LeavesinCheck;
 
                         try{
                             LeavesinCheck = new CheckDetect(this).detect(white);
                         } catch (IllegalArgumentException e){
                             LeavesinCheck = true;
+                        }
+
+                        //castling
+                        if(castleRookFromCol != -1){
+                            int back = r1;
+                            board[back][castleRookFromCol] = board[back][castleRookToCol];
+                            board[back][castleRookToCol] = '.';
+                        }
+                        //en passant
+                        if(epTempRow != -1){
+                            board[epTempRow][c2] = epTempPiece;
                         }
 
                         board[r1][c1] = piece;
@@ -273,8 +317,26 @@ public class Board {
         //check validity of moves and move piece
         if (valid){
             char capturedPiece = board[r2][c2];
+            int epTempRow = -1;
+            char epTempPiece = '.';
+            int castleRookFromCol = -1;
+            int castleRookToCol = -1;
+
             board[r2][c2] = piece;
             board[r1][c1] =  '.';
+
+
+            if((piece=='p'||piece=='P') && Math.abs(c1-c2) == 1 && capturedPiece == '.'&&r2 == getEnPassantTargetRow() && c2 == getEnPassantTargetCol()&&((Character.isUpperCase(piece)&&(r2 - r1)==-1)||(Character.isLowerCase(piece)&&(r2-r1)==1))){
+                if(Character.isUpperCase(piece)){
+                    epTempRow = r2 +1;
+                }else{
+                    epTempRow = r2 -1;
+                }
+                epTempPiece = board[epTempRow][c2];
+                board[epTempRow][c2] = '.';
+
+
+            }
 
             //castling move
             if((piece == 'k'||piece == 'K') && r1 ==r2 && Math.abs(c1-c2) == 2){
@@ -282,9 +344,13 @@ public class Board {
                 if(c2>c1){
                     board[back][5] = board[back][7];
                     board[back][7] = '.';
+                    castleRookFromCol = 7;
+                    castleRookToCol = 5;
                 } else{
                     board[back][3] = board[back][0];
                     board[back][0] = '.';
+                    castleRookFromCol = 0;
+                    castleRookToCol = 3;
                 }
             }
 
@@ -292,6 +358,17 @@ public class Board {
             //check detection
             CheckDetect check = new CheckDetect(this);
             boolean isInCheck = check.detect(Character.isUpperCase(piece));
+
+            if(epTempRow != -1){
+                board[epTempRow][c2] = epTempPiece;
+            }
+
+            if(castleRookFromCol != -1){
+                int back = r1;
+                board[back][castleRookFromCol] = board[back][castleRookToCol];
+                board[back][castleRookToCol] = '.';
+            }
+
 
             board[r1][c1] = piece;
             board[r2][c2] = capturedPiece;
@@ -308,8 +385,45 @@ public class Board {
             char capturedPiece = board[r2][c2];
             board[r2][c2] = piece;
             board[r1][c1] =  '.';
+
+            if((piece == 'k'||piece == 'K')&& r1==r2 && Math.abs(c1-c2) == 2){
+                int back = r1;
+                if(c2>c1){
+                    board[back][5] = board[back][7];
+                    board[back][7] = '.';
+                } else{
+                    board[back][3] = board[back][0];
+                    board[back][0] = '.';
+                }
+            }
+
+
+            int epTempRow = -1;
+            char epTempPiece = '.';
+
+            if((piece=='p'||piece=='P') && Math.abs(c1-c2) == 1 && capturedPiece == '.'&&r2 == getEnPassantTargetRow() && c2 == getEnPassantTargetCol()&&((Character.isUpperCase(piece)&&(r2 - r1)==-1)||(Character.isLowerCase(piece)&&(r2-r1)==1))){
+                if(Character.isUpperCase(piece)){
+                    epTempRow = r2 +1;
+                }else{
+                    epTempRow = r2 -1;
+                }
+                epTempPiece = board[epTempRow][c2];
+                board[epTempRow][c2] = '.';
+                capturedPiece = epTempPiece;
+
+            }
+
+            clearEnPassantTargetSquare();
+            if((piece == 'p'||piece == 'P')&&Math.abs(r1-r2) == 2&& c1==c2){
+                setEnPassantTargetSquare((r1+r2)/2, c1);
+            }
+
+
             recordMove(new PastMove(r1, r2, c1, c2, piece, capturedPiece));
             print();
+
+
+
 
             CheckDetect check = new CheckDetect(this);
             try {
@@ -549,6 +663,28 @@ public class Board {
         return true;
 
 
+    }
+
+    //en passant set up
+    private int enPassantTargetRow = -1;
+    private int enPassantTargetCol = -1;
+
+    public int getEnPassantTargetRow() {
+        return enPassantTargetRow;
+    }
+
+    public int getEnPassantTargetCol() {
+        return enPassantTargetCol;
+    }
+
+    public void setEnPassantTargetSquare(int r, int c) {
+        enPassantTargetRow = r;
+        enPassantTargetCol = c;
+    }
+
+    public void clearEnPassantTargetSquare() {
+        enPassantTargetRow = -1;
+        enPassantTargetCol = -1;
     }
 
 
