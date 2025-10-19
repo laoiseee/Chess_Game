@@ -9,6 +9,33 @@ public class King extends Piece{
     }
 
     public boolean validMove(int r1, int r2, int c1, int c2, Board board){
+        //castling
+        if(r1 == r2 && Math.abs(c1-c2)==2){
+            boolean isKingSide;
+            if(c2>c1){
+                isKingSide = true;
+            }else{
+                isKingSide = false;
+            }
+
+            boolean onStartSquare;
+            if(isWhite){
+                onStartSquare = (r1 == 7 && c1 ==4);
+            } else{
+                onStartSquare = (r1 == 0 && c1 ==4);
+            }
+            if(!onStartSquare){
+                throw new IllegalArgumentException("Castling not possible: King not on starting square");
+            }
+
+            boolean castlePossible = board.canCastle(isWhite, isKingSide);
+            if(!castlePossible){
+                throw new IllegalArgumentException("Castling not possible: Conditions not met.");
+            }
+            return true;
+
+        }
+
         int rlen = Math.abs(r1-r2);
         int clen = Math.abs(c1-c2);
 
