@@ -79,7 +79,7 @@ public class gameStart {
 
         while(!gameEnd) {
             //white turn
-            while (whiteTurn == true && !gameEnd) {
+            if(whiteTurn == true && !gameEnd) {
                 //checkmate and stalemate
                 if (!board.hasLegalMoves(true)) {
                     if(board.inCheck(true)){
@@ -225,7 +225,7 @@ public class gameStart {
             }
 
             //black turn
-            while (whiteTurn == false && !gameEnd) {
+            if(whiteTurn == false && !gameEnd) {
                 //checkmate and stalemate
                 if (!board.hasLegalMoves(false)) {
                     if (board.inCheck(false)) {
