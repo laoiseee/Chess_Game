@@ -167,7 +167,36 @@ public class gameStart {
 
                 }
 
-                valid = board.move(r1, r2, c1, c2);
+                try{
+                    valid = board.move(r1, r2, c1, c2);
+                }catch(IllegalStateException ex){
+
+                    if("Promotion required.".equals(ex.getMessage())) {
+                        while(true){
+                        System.out.println("Pawn Promotion! Enter Piece (R, Q, N or N)");
+                        String s = scanIn.next();
+                        if (s == null || s.isEmpty()) {
+                            continue;
+                        }
+                        char choice = Character.toUpperCase(s.charAt(0));
+                        try {
+                            board.setPromotionChoice(choice);
+                            break;
+
+                        } catch (IllegalArgumentException exChoice) {
+                            System.out.println(exChoice.getMessage());
+
+                        }
+                    }
+                        valid = board.move(r1, r2, c1, c2);
+                    } else{
+                       valid = false;
+                    }
+
+
+                }catch(IllegalArgumentException ex){
+                    valid = false;
+                }
                 if (valid) {
                     System.out.println("Valid move entered");
                     whiteTurn = false;
@@ -196,13 +225,18 @@ public class gameStart {
                 }
 
                 System.out.println(name2 + ", it's your turn");
-                System.out.print("Type 'save' to save the game, 'load' to reload a game, 'history' to view move history, 'moves' to see all available moves or 'quit' to quit the game");
+                System.out.println("Type 'save' to save the game, 'load' to reload a game, 'history' to view move history, 'moves' to see all available moves or 'quit' to quit the game");
                 System.out.println("Please enter a move: ");
 
                 String start = scanIn.next();
                 if (start.toLowerCase().equals("save")) {
-                    GameSaveandLoad.save(board, "saved_game.txt");
-                    continue;
+                    if(board.isPromotionPending()) {
+                        System.out.println("Finish promotion before saving");
+                    }
+
+                        GameSaveandLoad.save(board, "saved_game.txt");
+                        continue;
+
                 }
 
                 if(start.toLowerCase().equals("load")) {
@@ -269,7 +303,36 @@ public class gameStart {
                     continue;
 
                 }
-                valid = board.move(r1, r2, c1, c2);
+                try{
+                    valid = board.move(r1, r2, c1, c2);
+                }catch(IllegalStateException ex){
+
+                    if("Promotion required.".equals(ex.getMessage())) {
+                        while(true){
+                            System.out.println("Pawn Promotion! Enter Piece (R, Q, N or N)");
+                            String s = scanIn.next();
+                            if (s == null || s.isEmpty()) {
+                                continue;
+                            }
+                            char choice = Character.toUpperCase(s.charAt(0));
+                            try {
+                                board.setPromotionChoice(choice);
+                                break;
+
+                            } catch (IllegalArgumentException exChoice) {
+                                System.out.println(exChoice.getMessage());
+
+                            }
+                        }
+                        valid = board.move(r1, r2, c1, c2);
+                    } else{
+                        valid = false;
+                    }
+
+
+                }catch(IllegalArgumentException ex){
+                    valid = false;
+                }
 
                 if (valid) {
                     System.out.println("\nValid move entered");

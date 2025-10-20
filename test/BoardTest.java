@@ -250,4 +250,36 @@ class BoardTest {
         assertEquals(board.getPiece(2, 5), 'P');
     }
 
+    @Test
+    void pawnPromotesToQueen(){
+        board.clearBoard();
+        board.insertPiece(1, 0, 'P');
+        board.insertPiece(0, 4, 'K');
+
+        board.setPromotionChoice('Q');
+        assertTrue(board.move(1,0,0,0));
+        assertEquals(board.getPiece(0,0), 'Q');
+    }
+
+    @Test
+    void pawnPromotesToKnight(){
+        board.clearBoard();
+        board.insertPiece(1, 0, 'P');
+        board.insertPiece(0, 4, 'K');
+
+        board.setPromotionChoice('N');
+        assertTrue(board.move(1,0,0,0));
+        assertEquals(board.getPiece(0,0), 'N');
+    }
+
+    @Test
+    void rejectsInvalidPromotionLetter(){
+        board.clearBoard();
+
+        IllegalArgumentException ex = assertThrows(
+                IllegalArgumentException.class,
+        ()->board.setPromotionChoice('X')
+        );
+        assertEquals("Invalid choice: Promotion must be 'Q', 'R', 'B' or 'N'", ex.getMessage() );
+    }
 }

@@ -1,16 +1,34 @@
 import java.util.*;
 
-public class Board {
-    private char[][] board;
-    private PastMove lastWhiteMove = null;
-    private PastMove lastBlackMove = null;
-    private List<PastMove> history = new ArrayList<>();
+/**
+ * Represents the choice board and includes all of the board level rules:
+ * piece placement, legal moves, performing moves, this
+ * includes castling, en passant and pawn promotion.
+ * Also includes getting game history and possible moves
+ *<p>Board coordinates: back row for 0 for black and 7 for white.
+ * File 'a' is column 0 and file 'h' is column 7
+ * </p>
+ */
 
+
+public class Board {
+    /**8x8 board with uppercase white pieces and lowercase black pieces*/
+    private char[][] board;
+    /**Last move made by white*/
+    private PastMove lastWhiteMove = null;
+    /**Last move made by black*/
+    private PastMove lastBlackMove = null;
+    /**history of moves*/
+    private List<PastMove> history = new ArrayList<>();
+    /**Holds pawn promotion choice when pawn reaches other side of board*/
+    private Character promotionPending = null;
+
+    /**Creates a board in the standard starting formarion*/
     public Board(){
         board = new char[8][8];
         setup();
     }
-
+    /**Clears board history and puts board in starting setup position*/
     private void setup(){
         history.clear();
         lastWhiteMove = null;
@@ -32,7 +50,7 @@ public class Board {
         }
 
     }
-
+    /**Prints simple view of the board in its current state*/
     public void print(){
         int num = 1;
         System.out.println("   _ _ _ _ _ _ _ _ ");
@@ -49,6 +67,11 @@ public class Board {
         System.out.println("   a b c d e f g h");
     }
 
+    /**Checks if a side is in check
+     * @param white true for white, false for black
+     * @return true if king for this side is in check, false if not
+     * */
+
     public boolean inCheck(boolean white){
         try{
             return new CheckDetect(this).detect(white);
@@ -57,7 +80,13 @@ public class Board {
         }
 
     }
-
+    /**
+     * Generates all legal moves for a player,
+     * excludes moves that leave the player in check,
+     * includes en passant and castling.
+     * @param white true to generate white moves and false for black moves.
+     * @return gives all legal moves using {@link PastMove}
+     * */
     public List<PastMove> getLegalMoves(boolean white){
         List <PastMove> legal = new ArrayList<>();
 
@@ -124,6 +153,9 @@ public class Board {
                                 castleRookToCol = 3;
                             }
                         }
+
+
+
                         //en passant
                         int epTempRow = -1;
                         char epTempPiece = '.';
@@ -175,12 +207,30 @@ public class Board {
 
     }
 
+
+    /**Used to see if a piece has legal moves
+     * @param white true for white, false for black
+     * @return true if{@link #getLegalMoves(boolean)} is not empty
+     * */
     public boolean hasLegalMoves(boolean white){
         return !getLegalMoves(white).isEmpty();
 
     }
 
     //moving piece logic
+    /**
+     * Moving piece logic
+     * Attempts to move a piece on the board.
+     * Checks legality of move (blocking, capturing, en passant, castling and pawn promotion)
+     * @param r1 is source row
+     * @param r2 is destination row
+     * @param c1 is source column
+     * @param c2 is destination column
+     * <p>@throws IllegalArgumentException if board is in an invalid state (e.g. no king present)
+     * @throws IllegalStateException if pawn reaches opposite side and no choice is made for promotion
+     * in {@link #setPromotionChoice(char)}
+     * @return true for completed move, false otherwise
+     * */
     public boolean move(int r1, int r2, int c1, int c2){
         if(!inBounds(r1,c1)||!inBounds(r2, c2)){
             System.out.println("Move out of Bounds");
@@ -314,7 +364,7 @@ public class Board {
             }
         }
 
-        //check validity of moves and move piece
+        //check validity of moves and simulate move to make sure king is not left in check
         if (valid){
             char capturedPiece = board[r2][c2];
             int epTempRow = -1;
@@ -325,7 +375,7 @@ public class Board {
             board[r2][c2] = piece;
             board[r1][c1] =  '.';
 
-
+            //en passant capture simulated
             if((piece=='p'||piece=='P') && Math.abs(c1-c2) == 1 && capturedPiece == '.'&&r2 == getEnPassantTargetRow() && c2 == getEnPassantTargetCol()&&((Character.isUpperCase(piece)&&(r2 - r1)==-1)||(Character.isLowerCase(piece)&&(r2-r1)==1))){
                 if(Character.isUpperCase(piece)){
                     epTempRow = r2 +1;
@@ -338,7 +388,7 @@ public class Board {
 
             }
 
-            //castling move
+            //castling rook simulated
             if((piece == 'k'||piece == 'K') && r1 ==r2 && Math.abs(c1-c2) == 2){
                 int back = r1;
                 if(c2>c1){
@@ -359,17 +409,19 @@ public class Board {
             CheckDetect check = new CheckDetect(this);
             boolean isInCheck = check.detect(Character.isUpperCase(piece));
 
+            //undo en passant simulation
             if(epTempRow != -1){
                 board[epTempRow][c2] = epTempPiece;
             }
 
+            //undo castling rook simulation
             if(castleRookFromCol != -1){
                 int back = r1;
                 board[back][castleRookFromCol] = board[back][castleRookToCol];
                 board[back][castleRookToCol] = '.';
             }
 
-
+            //undo main simulation
             board[r1][c1] = piece;
             board[r2][c2] = capturedPiece;
 
@@ -381,11 +433,13 @@ public class Board {
 
         }
 
+        //Execute if valid
         if(valid){
             char capturedPiece = board[r2][c2];
             board[r2][c2] = piece;
             board[r1][c1] =  '.';
 
+            //castling rook move
             if((piece == 'k'||piece == 'K')&& r1==r2 && Math.abs(c1-c2) == 2){
                 int back = r1;
                 if(c2>c1){
@@ -397,7 +451,7 @@ public class Board {
                 }
             }
 
-
+            //en passant move
             int epTempRow = -1;
             char epTempPiece = '.';
 
@@ -413,18 +467,39 @@ public class Board {
 
             }
 
+            //pawn promotion
+            if((piece == 'P'&&r2 == 0)|| (piece == 'p'&&r2 == 7)){
+                if(promotionPending == null){
+                    board[r1][c1] = piece;
+                    board[r2][c2] = capturedPiece;
+                    throw new IllegalStateException("Promotion required.");
+                }
+                char promoteTo;
+                if(Character.isUpperCase(piece)){
+                    promoteTo = promotionPending;
+                } else{
+                    promoteTo = Character.toLowerCase(promotionPending);
+                }
+                board[r2][c2] = promoteTo;
+                promotionPending = null;
+
+            }
+
+
+
+            //update en passant target square
             clearEnPassantTargetSquare();
             if((piece == 'p'||piece == 'P')&&Math.abs(r1-r2) == 2&& c1==c2){
                 setEnPassantTargetSquare((r1+r2)/2, c1);
             }
 
-
+            //record and print
             recordMove(new PastMove(r1, r2, c1, c2, piece, capturedPiece));
             print();
 
 
 
-
+            //check notifiers
             CheckDetect check = new CheckDetect(this);
             try {
                 if (check.detect(true)) {
@@ -442,7 +517,10 @@ public class Board {
         }
         return valid;
     }
-    //clear board for testing
+    /**
+     * sets every piece to '.'
+     * used in testing
+     * */
     public void clearBoard(){
         for(int r = 0; r < 8; r++){
             for(int c = 0; c < 8; c++){
@@ -452,31 +530,55 @@ public class Board {
 
     }
 
-//check if move is in bounds
+/**
+ * Checks coordinates are in bounds
+ * @param r is the row
+ * @param c is the colum
+ * @return  true if 0<=r and c<=7
+ * */
     private boolean inBounds(int r, int c){
         return r >= 0 && r < 8 && c >= 0 && c < 8;
 
     }
 
-    //add piece for testing
+    /**adds a piece on the board
+     * very useful in testing
+     * @param r is the row
+     * @param c is the column
+     * @param piece is the piece to be inserted
+     * */
     public void insertPiece(int r, int c, char piece){
         board[r][c] = piece;
 
     }
 
+    /**
+     * Getter for piece on certain square
+     * @param r1  is te row
+     * @param c1 is the column
+     * @return the piece at r1, c1*/
+
     public char getPiece(int r1, int c1){
         return board[r1][c1];
     }
 
+    /**
+     * gets last white move
+     * @return return returns last move made by white (null if none)*/
     public PastMove getLastWhiteMove(){
         return lastWhiteMove;
     }
 
+    /**
+     * gets last black move
+     * @return returns last move made by black (null if none)*/
     public PastMove getLastBlackMove(){
         return lastBlackMove;
     }
 
-    //record past moves
+    /**record past moves and add them to the history
+     * @param past is the move to record
+     * */
     public void recordMove(PastMove past){
         boolean moveWasWhite = Character.isUpperCase(past.piece);
         if(moveWasWhite){
@@ -487,16 +589,23 @@ public class Board {
         history.add(past);
     }
 
+    /**Getter to get the full history of moves made in this game
+     * @return gives history*/
     public List<PastMove> getHistory(){
         return history;
     }
 
+
+    /**Resets the board to starting position and clears states*/
     public void gameReset(){
         setup();
     }
 
     //castling
-    //check if piece has moved from original point
+    /**Check if piece has moved from starting point
+     * @param r is the strat row
+     * @param c  is the start column
+     * @return true of piece has moved, false otherwise*/
     public boolean hasMoved(int r, int c){
         List<PastMove> history = getHistory();
         if(history == null){
@@ -510,7 +619,11 @@ public class Board {
         return false;
     }
 
-    //check if squarre is under attack
+    /**Tests if piece is under attack by component if it moves (used for castling)
+     * @param targetRow is the squares row
+     * @param targetCol  is the column of the square
+     * @param attackerIsWhite  true if attackers are white, false if black
+     * @return return true if any attcking piece has a valid move to the square*/
     public boolean isSquareAttacked(int targetRow, int targetCol, boolean attackerIsWhite){
         for(int r = 0; r < 8; r++){
             for(int c = 0; c < 8; c++){
@@ -568,7 +681,10 @@ public class Board {
         return false;
     }
 
-    //check if castling is valid
+    /**Checks if castling is possible given side and direction of move
+     * @param isWhite true for white, false for black
+     * @param kingSide true for king side castling, false for queen side castling
+     * @return true if all conditions met for castling, false otherwise*/
     public boolean canCastle(boolean isWhite, boolean kingSide){
         int backRow;
 
@@ -665,27 +781,64 @@ public class Board {
 
     }
 
-    //en passant set up
+
+    //pawn promotion
+    /**
+     * sets up pending pawn promotion choice (must be Q, R, B, or N)
+     * @param choice is teh choice of piece to promote to
+     * @throws IllegalArgumentException if{@code choice} is not valid
+     * */
+    public void setPromotionChoice(char choice){
+        choice = Character.toUpperCase(choice);
+        if(choice != 'Q'&& choice != 'R'&& choice != 'B'&&choice != 'N'){
+          throw new IllegalArgumentException("Invalid choice: Promotion must be 'Q', 'R', 'B' or 'N'");
+        }
+        this.promotionPending = choice;
+
+    }
+
+    /**
+     * shows if promotion choice is penidng
+     * @return true if a promotion choice is pending*/
+    public boolean isPromotionPending(){
+        return promotionPending != null;
+    }
+
+    /**row of current en passant target square*/
     private int enPassantTargetRow = -1;
+
+    /**column of current en passant target square*/
     private int enPassantTargetCol = -1;
 
+    /**En passant target row getter
+     * @return gievs target row*/
     public int getEnPassantTargetRow() {
         return enPassantTargetRow;
     }
+
+    /**En passant target column getter
+     * @return gievs target column*/
 
     public int getEnPassantTargetCol() {
         return enPassantTargetCol;
     }
 
+    /**sets en passant target square
+     * @param r is the row
+     * @param c is the column*/
     public void setEnPassantTargetSquare(int r, int c) {
         enPassantTargetRow = r;
         enPassantTargetCol = c;
     }
 
+
+    /**Clears en passant target square*/
     public void clearEnPassantTargetSquare() {
         enPassantTargetRow = -1;
         enPassantTargetCol = -1;
     }
+
+
 
 
 
