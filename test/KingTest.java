@@ -78,7 +78,7 @@ class KingTest {
     }
 
     @Test
-    void castleALlowedWhenLegal(){
+    void castleAllowedWhenLegal(){
         board.clearBoard();
         board.insertPiece(7, 4, 'K');
         board.insertPiece(0, 4, 'k');

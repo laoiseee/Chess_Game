@@ -133,6 +133,7 @@ class BoardTest {
         board.insertPiece(7, 0, 'k');
         board.insertPiece(6, 2, 'Q');
         board.insertPiece(5, 1, 'K');
+        board.print();
         assertFalse(board.inCheck(false));
         assertFalse(board.hasLegalMoves(false));
 
@@ -255,6 +256,7 @@ class BoardTest {
         board.clearBoard();
         board.insertPiece(1, 0, 'P');
         board.insertPiece(0, 4, 'K');
+        board.print();
 
         board.setPromotionChoice('Q');
         assertTrue(board.move(1,0,0,0));

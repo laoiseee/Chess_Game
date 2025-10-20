@@ -1,5 +1,6 @@
 public class Rook extends Piece{
     public Rook (boolean colour){
+        //initialise
         isWhite = colour;
 
         if(isWhite){
@@ -11,10 +12,12 @@ public class Rook extends Piece{
     }
 
     public boolean validMove(int r1, int r2, int c1, int c2, Board board){
+        //check valud move
         int step;
         if(c2 != c1 && r2 != r1){
             throw new IllegalArgumentException("Rook must move in straight horizontal or vertical lines");
         } else if(c1 == c2 && r1!= r2) {
+            //check if path is blocked
             if(r1> r2){
                 step = -1;
             } else{
@@ -39,6 +42,7 @@ public class Rook extends Piece{
                 }
             }
         }
+        //own capture
         char dest = board.getPiece(r2, c2);
         if(isWhite && Character.isUpperCase(dest)){
             throw new IllegalArgumentException("Cannot capture your own white piece");

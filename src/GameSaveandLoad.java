@@ -4,9 +4,10 @@ import java.util.*;
 import java.nio.*;
 
 public class GameSaveandLoad {
+    //save method
     public static void save(Board board, String filename){
         try{
-
+            //create snapshot of current board
             StringBuilder boardState = new StringBuilder();
             for(int r = 0; r<8; r++){
                 for(int c = 0; c<8; c++){
@@ -15,6 +16,7 @@ public class GameSaveandLoad {
                 boardState.append("\n");
             }
             boardState.append("---\n");
+            //add history to file
             StringBuilder sb = new StringBuilder(boardState);
             for(PastMove move: board.getHistory()){
                 sb.append(move.r1).append(' ')
@@ -22,6 +24,7 @@ public class GameSaveandLoad {
                         .append(move.c1).append(' ')
                         .append(move.c2).append('\n');
             }
+            //save file
             Files.writeString(Path.of(filename), sb.toString());
             System.out.println("Game saved to " + filename);
 
@@ -31,16 +34,21 @@ public class GameSaveandLoad {
         }
     }
 
+
+// load methof
     public static void load(Board board, String filename){
         try{
+            //reset board
             board.gameReset();
 
+            //load in content
             String gameContent =  Files.readString(Path.of(filename));
             String[] lines = gameContent.split("\n");
 
             int lineIndex = 0;
             board.clearBoard();
 
+            //find and get last board state
           for(int r = 0; r < 8 && lineIndex<lines.length;r++, lineIndex++){
               String line = lines[lineIndex].trim();
               if(line.equals("---")){

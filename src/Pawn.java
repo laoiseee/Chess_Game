@@ -1,6 +1,7 @@
 public class Pawn extends Piece {
 
     public Pawn(boolean colour) {
+        //initialise
         isWhite = colour;
 
         if (isWhite) {
@@ -11,6 +12,7 @@ public class Pawn extends Piece {
     }
 
     public boolean validMove(int r1, int r2, int c1, int c2, Board board) {
+        //check move blocked
         int move = r2 - r1;
         if (c1 == c2) {
             if (isWhite) {
@@ -46,6 +48,7 @@ public class Pawn extends Piece {
             }
 
         } else {
+            //en passant
             if (Math.abs(c1 - c2) == 1 && ((isWhite && move == -1) || (!isWhite && move == 1))) {
                 char dest = board.getPiece(r2, c2);
                 if (dest == '.') {
@@ -62,7 +65,7 @@ public class Pawn extends Piece {
                         throw new IllegalArgumentException("No piece to capture");
 
                 }else {
-
+                    //own capture
                     if (isWhite && Character.isUpperCase(dest)) {
                         throw new IllegalArgumentException("Cannot capture your own white piece");
                     }

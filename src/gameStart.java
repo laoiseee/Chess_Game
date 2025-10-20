@@ -15,6 +15,7 @@ public class gameStart {
     public gameStart(Scanner scanIn) {
         this.scanIn = scanIn;
 
+        //Get names and welcome
         System.out.println("\nWelcome");
         System.out.println("Please enter the name of player one (white): ");
         name1 = scanIn.nextLine();
@@ -23,6 +24,7 @@ public class gameStart {
         System.out.println("Welcome "+name1+" and "+name2+".");
     }
 
+    //get histor
     public void printHistory(Board board){
         List<PastMove> history = board.getHistory();
         if(history == null||history.isEmpty()){
@@ -36,6 +38,7 @@ public class gameStart {
         }
 
     }
+    //converting input to array destination
     private int filetoColumn(char file){
         return file - 'a';
 
@@ -64,7 +67,7 @@ public class gameStart {
 
             return new int[]{r,c};
     }
-
+    //each turn
     public void turn(Board board) {
         if(!board.getHistory().isEmpty()){
             PastMove lastMove = board.getHistory().getLast();
@@ -73,8 +76,11 @@ public class gameStart {
 
         boolean valid;
 
+
         while(!gameEnd) {
+            //white turn
             while (whiteTurn == true && !gameEnd) {
+                //checkmate and stalemate
                 if (!board.hasLegalMoves(true)) {
                     if(board.inCheck(true)){
                         System.out.println("Checkmate. Black wins!");
@@ -85,37 +91,44 @@ public class gameStart {
                     return;
 
                 }
+                //print opponents last move
                 PastMove prevBlack = board.getLastBlackMove();
                 if (prevBlack != null) {
                     System.out.println("Blacks Last Move: "+prevBlack);
 
                 }
+                //turn prompt
                 System.out.println(name1 + ", it's your turn");
                 System.out.println("Type 'save' to save the game, 'load' to reload a game, 'history' to view move history, 'moves' to see all available moves or 'quit' to quit the game");
                 System.out.println("Please enter a move: ");
 
                 String start = scanIn.next();
+                //save case
                 if (start.toLowerCase().equals("save")) {
                     GameSaveandLoad.save(board, "saved_game.txt");
                     continue;
                 }
 
+                //load case
                 if(start.toLowerCase().equals("load")) {
                     GameSaveandLoad.load(board, "saved_game.txt");
                     continue;
                 }
 
+                //quit case
                 if(start.toLowerCase().equals("quit")){
                     System.out.println("Game ended by "+name1);
                     gameEnd = true;
                     return;
                 }
 
+                //get history case
                 if(start.toLowerCase().equals("history")){
                     printHistory(board);
                     continue;
                 }
 
+                //get legal moges case
                 if(start.toLowerCase().equals("moves")){
                     List<PastMove> moves = board.getLegalMoves(true);
                     if(moves==null||moves.isEmpty()){
@@ -129,6 +142,7 @@ public class gameStart {
                     continue;
 
                 }
+                //make move
                 int[] startSpot;
                 try{
                     startSpot = newSquare(start);
@@ -161,16 +175,19 @@ public class gameStart {
 
                 char current = board.getPiece(r1, c1);
 
+                //validate turn
                 if (current == 'p' || current == 'n' || current == 'r' || current == 'b' || current == 'q' || current == 'k') {
                     System.out.println("It is not your turn");
                     continue;
 
                 }
 
+                // check move is valid
                 try{
                     valid = board.move(r1, r2, c1, c2);
                 }catch(IllegalStateException ex){
 
+                    //pawn promotion
                     if("Promotion required.".equals(ex.getMessage())) {
                         while(true){
                         System.out.println("Pawn Promotion! Enter Piece (R, Q, N or N)");
@@ -207,7 +224,9 @@ public class gameStart {
 
             }
 
+            //black turn
             while (whiteTurn == false && !gameEnd) {
+                //checkmate and stalemate
                 if (!board.hasLegalMoves(false)) {
                     if (board.inCheck(false)) {
                         System.out.println("Checkmate. White wins!");
@@ -218,17 +237,20 @@ public class gameStart {
                     return;
 
                     }
+                //print opponents last move
                 PastMove prevWhite = board.getLastWhiteMove();
                 if (prevWhite != null) {
                     System.out.println("Whites Last Move: "+prevWhite);
 
                 }
 
+                //turn prompt
                 System.out.println(name2 + ", it's your turn");
                 System.out.println("Type 'save' to save the game, 'load' to reload a game, 'history' to view move history, 'moves' to see all available moves or 'quit' to quit the game");
                 System.out.println("Please enter a move: ");
 
                 String start = scanIn.next();
+                //save case
                 if (start.toLowerCase().equals("save")) {
                     if(board.isPromotionPending()) {
                         System.out.println("Finish promotion before saving");
@@ -239,20 +261,25 @@ public class gameStart {
 
                 }
 
+                //load case
                 if(start.toLowerCase().equals("load")) {
                     GameSaveandLoad.load(board, "saved_game.txt");
                     continue;
                 }
+
+                //quit case
                 if(start.toLowerCase().equals("quit")){
                     System.out.println("Game ended by "+name2);
                     gameEnd = true;
                     return;
                 }
+                //get history case
                 if(start.toLowerCase().equals("history")){
                     printHistory(board);
                     continue;
                 }
 
+                //get legal moves case
                 if(start.toLowerCase().equals("moves")){
                     List<PastMove> moves = board.getLegalMoves(false);
                     if(moves==null||moves.isEmpty()){
@@ -267,6 +294,7 @@ public class gameStart {
 
                 }
 
+                //make move
                 int[] startSpot;
                 try{
                     startSpot = newSquare(start);
@@ -283,6 +311,7 @@ public class gameStart {
                     return;
                 }
 
+                //make move
                 int[] endSpot;
                 try{
                     endSpot = newSquare(end);
@@ -298,11 +327,14 @@ public class gameStart {
 
                 char current = board.getPiece(r1, c1);
 
+                //check turn valid
                 if (current == 'P' || current == 'N' || current == 'R' || current == 'B' || current == 'Q' || current == 'K') {
                     System.out.println("It is not your turn");
                     continue;
 
                 }
+
+                //pawn promotion
                 try{
                     valid = board.move(r1, r2, c1, c2);
                 }catch(IllegalStateException ex){

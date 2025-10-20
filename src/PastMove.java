@@ -7,6 +7,7 @@ public class PastMove {
     public char dest;
 
     public PastMove(int r1, int r2, int c1, int c2, char piece, char dest) {
+        //create variables
         this.r1 = r1;
         this.c1 = c1;
         this.r2 = r2;
@@ -15,12 +16,14 @@ public class PastMove {
         this.dest = dest;
     }
 
+    //change to square format
     public static String square(int r, int c){
         char letter = (char)('a'+ c);
         int rank = 1+r;
         return "" + letter +rank;
     }
 
+    //create string
     @Override
     public String toString(){
         String base = (piece + "(" + square(r1,c1) + "," + square(r2,c2) +")");

@@ -1,5 +1,6 @@
 public class Queen extends Piece {
     public Queen(boolean colour){
+        //initialise
         isWhite = colour;
 
         if(isWhite){
@@ -11,6 +12,7 @@ public class Queen extends Piece {
     }
 
     public boolean validMove(int r1, int r2, int c1, int c2, Board board){
+        //use existing logic
         Rook rook = new Rook(isWhite);
         Bishop bishop = new Bishop(isWhite);
 
@@ -29,12 +31,14 @@ public class Queen extends Piece {
             }
         }
 
+        //catch errors
         if(!valid){
             throw new IllegalArgumentException("Queen must move straight or diagonally.");
         }
 
         char dest = board.getPiece(r2, c2);
 
+        //own capture
         if(isWhite && Character.isUpperCase(dest)){
             throw new IllegalArgumentException("You cannot capture your own White piece.");
         }

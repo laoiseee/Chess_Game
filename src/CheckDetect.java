@@ -5,6 +5,7 @@ public class CheckDetect {
     }
 
     public boolean detect(boolean isWhite){
+        //define king
         char king;
         if(isWhite){
             king = 'K';
@@ -12,9 +13,12 @@ public class CheckDetect {
             king = 'k';
         }
 
+        //initialise
         int kingr = -1;
         int kingc = -1;
 
+
+        //find king row and column
         for(int r = 0; r< 8;r++) {
             for (int c = 0; c < 8; c++) {
                 if (board.getPiece(r, c) == king) {
@@ -30,6 +34,7 @@ public class CheckDetect {
                 throw new IllegalArgumentException("King not found");
             }
 
+            //find all pieces and check if they have a valid move to the king
             for(int r = 0; r< 8; r++) {
                 for(int c = 0; c < 8; c++) {
                     char piece = board.getPiece(r, c);
@@ -44,6 +49,7 @@ public class CheckDetect {
                         continue;
                     }
 
+                    //checking valid moves for each piece
                     try{
                         char lowerCase = Character.toLowerCase(piece);
                         if(lowerCase == 'p'){

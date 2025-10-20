@@ -1,5 +1,6 @@
 public class King extends Piece{
     public King(boolean colour){
+        //initialise pieces
         isWhite = colour;
         if(isWhite){
             symbol = 'K';
@@ -18,6 +19,7 @@ public class King extends Piece{
                 isKingSide = false;
             }
 
+            //check start square
             boolean onStartSquare;
             if(isWhite){
                 onStartSquare = (r1 == 7 && c1 ==4);
@@ -28,6 +30,7 @@ public class King extends Piece{
                 throw new IllegalArgumentException("Castling not possible: King not on starting square");
             }
 
+            //check legality
             boolean castlePossible = board.canCastle(isWhite, isKingSide);
             if(!castlePossible){
                 throw new IllegalArgumentException("Castling not possible: Conditions not met.");
@@ -35,7 +38,7 @@ public class King extends Piece{
             return true;
 
         }
-
+        //regular king movements
         int rlen = Math.abs(r1-r2);
         int clen = Math.abs(c1-c2);
 
